@@ -28,7 +28,13 @@ runAssistant()
 
 function showData(){
 
-renderTable("data-table", dataStore.CDR)
+renderTable("campaign-table", dataStore.CDR)
+
+renderTable("keyword-table", dataStore.CKR)
+
+renderTable("product-table", dataStore.CFR)
+
+renderTable("placement-table", dataStore.PPR)
 
 }
 
