@@ -26,6 +26,8 @@ import { renderKeywordMining } from "./renderers/keywordMiningRenderer.js"
 import { getCampaignInsights } from "./engines/intelligence/campaignDrillEngine.js"
 import { renderCampaignDrill } from "./renderers/campaignDrillRenderer.js"
 
+import { detectAlerts } from "./engines/intelligence/smartAlertsEngine.js"
+import { renderAlerts } from "./renderers/alertsRenderer.js"
 
 let filteredCDR = []
 let filteredCKR = []
@@ -101,6 +103,9 @@ renderBudgetSuggestions(budget)
 
 keywordOpportunityData = mineKeywords(filteredCKR)
 renderKeywordMining(keywordOpportunityData)
+
+const alerts = detectAlerts(filteredCDR)
+renderAlerts(alerts)
 
 }
 
