@@ -1,23 +1,24 @@
-export function renderTable(containerId, data){
+export function renderTable(containerId,data){
 
 const container = document.getElementById(containerId)
 
+if(!container) return
+
 if(!data || data.length === 0){
 
-container.innerHTML = "No data available"
-
+container.innerHTML = "<p>No data available</p>"
 return
 
 }
 
-let html = "<table border='1'>"
+const headers = Object.keys(data[0])
+
+let html = "<table class='data-table'>"
 
 html += "<thead><tr>"
 
-Object.keys(data[0]).forEach(key=>{
-
-html += `<th>${key}</th>`
-
+headers.forEach(h=>{
+html += `<th>${h}</th>`
 })
 
 html += "</tr></thead>"
@@ -28,9 +29,34 @@ data.forEach(row=>{
 
 html += "<tr>"
 
-Object.values(row).forEach(val=>{
+headers.forEach(h=>{
 
-html += `<td>${val}</td>`
+let value = row[h]
+
+
+/* priority styling */
+
+if(h === "priority"){
+
+let cls = "badge-low"
+
+if(value === "High") cls = "badge-high"
+if(value === "Medium") cls = "badge-medium"
+
+value = `<span class="${cls}">${value}</span>`
+
+}
+
+
+/* recommendation styling */
+
+if(h === "recommendation"){
+
+value = `<span class="badge-action">${value}</span>`
+
+}
+
+html += `<td>${value ?? ""}</td>`
 
 })
 
