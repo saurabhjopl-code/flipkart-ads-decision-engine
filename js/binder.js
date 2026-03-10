@@ -54,16 +54,12 @@ function updateProgress(percent){
 const bar = document.getElementById("progress-fill")
 const text = document.getElementById("progress-text")
 
+if(bar){
 bar.style.width = percent + "%"
-
-text.innerText = percent + "%"
-
 }
 
-
-
-function hideLoader(){
-
-document.getElementById("loading-screen").style.display = "none"
+if(text){
+text.innerText = percent + "%"
+}
 
 }
