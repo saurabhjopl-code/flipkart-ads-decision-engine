@@ -10,29 +10,64 @@
 
 <body>
 
-<header>
-<h1>Flipkart Ads Optimization Assistant</h1>
+<header class="header">
+
+<div class="logo">
+Flipkart Ads Optimization Assistant
+</div>
+
 </header>
 
 
-<section id="decision-center">
+<div class="container">
+
+
+<!-- SUMMARY CARDS -->
+
+<section class="summary">
+
+<div class="card urgent">
+<h3>Urgent Issues</h3>
+<p id="urgent-count">0</p>
+</div>
+
+<div class="card growth">
+<h3>Growth Opportunities</h3>
+<p id="growth-count">0</p>
+</div>
+
+<div class="card optimize">
+<h3>Optimizations</h3>
+<p id="optimize-count">0</p>
+</div>
+
+</section>
+
+
+
+<!-- DECISION CENTER -->
+
+<section>
 
 <h2>Decision Center</h2>
-
-<div id="decision-summary"></div>
 
 <div id="decision-table"></div>
 
 </section>
 
 
-<section id="data-section">
 
-<h2>Raw Data View</h2>
+<!-- RAW DATA -->
+
+<section>
+
+<h2>Campaign Data</h2>
 
 <div id="data-table"></div>
 
 </section>
+
+</div>
 
 
 <script type="module" src="./js/binder.js"></script>
