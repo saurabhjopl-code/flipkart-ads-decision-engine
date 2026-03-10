@@ -1,3 +1,8 @@
+let decisionData = []
+let healthData = []
+let keywordOpportunityData = []
+
+
 import { loadAllSheets } from "./data/csvLoader.js"
 import { dataStore } from "./data/dataStore.js"
 
@@ -84,18 +89,18 @@ renderTable("keyword-table", filteredCKR)
 renderTable("product-table", filteredCFR)
 renderTable("placement-table", filteredPPR)
 
-const decisions = runDecisionEngine()
-renderTable("decision-table", decisions)
-renderDecisions(decisions)
+decisionData = runDecisionEngine()
+renderTable("decision-table", decisionData)
+renderDecisions(decisionData)
 
-const health = calculateCampaignHealth(filteredCDR)
-renderCampaignHealth(health)
+healthData = calculateCampaignHealth(filteredCDR)
+renderCampaignHealth(healthData)
 
 const budget = generateBudgetSuggestions(filteredCDR)
 renderBudgetSuggestions(budget)
 
-const keywordInsights = mineKeywords(filteredCKR)
-renderKeywordMining(keywordInsights)
+keywordOpportunityData = mineKeywords(filteredCKR)
+renderKeywordMining(keywordOpportunityData)
 
 }
 
@@ -358,3 +363,54 @@ const insights=getCampaignInsights(campaign,dataStore)
 renderCampaignDrill(insights)
 
 }
+window.filterDecisionTable = function(){
+
+const filter = document.getElementById("decision-filter").value.toLowerCase()
+
+if(!filter){
+renderTable("decision-table", decisionData)
+return
+}
+
+const filtered = decisionData.filter(d =>
+(d.recommendation || "").toLowerCase().includes(filter)
+)
+
+renderTable("decision-table", filtered)
+
+}
+
+
+window.filterHealthTable = function(){
+
+const filter = document.getElementById("health-filter").value
+
+if(!filter){
+renderCampaignHealth(healthData)
+return
+}
+
+const filtered = healthData.filter(h => h.Status === filter)
+
+renderCampaignHealth(filtered)
+
+}
+
+
+window.filterKeywordTable = function(){
+
+const filter = document.getElementById("keyword-filter").value
+
+if(!filter){
+renderKeywordMining(keywordOpportunityData)
+return
+}
+
+const filtered = keywordOpportunityData.filter(k =>
+k.Action === filter
+)
+
+renderKeywordMining(filtered)
+
+}
+
