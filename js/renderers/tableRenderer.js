@@ -33,6 +33,13 @@ headers.forEach(h=>{
 
 let value = row[h]
 
+/* make campaign clickable */
+
+if(h === "Campaign Name" && value){
+
+value = `<span class="campaign-link" onclick="openCampaignDrill('${value}')">${value}</span>`
+
+}
 
 /* priority styling */
 
@@ -46,7 +53,6 @@ if(value === "Medium") cls = "badge-medium"
 value = `<span class="${cls}">${value}</span>`
 
 }
-
 
 /* recommendation styling */
 
