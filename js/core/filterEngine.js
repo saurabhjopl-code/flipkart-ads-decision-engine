@@ -1,6 +1,6 @@
-export function filterData(data, filters){
+export function filterData(data,filters){
 
-return data.filter(row =>{
+return data.filter(row=>{
 
 if(filters.acc && row["ACC"] !== filters.acc)
 return false
