@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
 
 <title>Flipkart Ads Optimization Assistant</title>
 
+<link rel="stylesheet" href="./css/reset.css">
+<link rel="stylesheet" href="./css/variables.css">
+<link rel="stylesheet" href="./css/components.css">
 <link rel="stylesheet" href="./css/layout.css">
 
 <link rel="icon" href="data:,">
 
 </head>
 
+
 <body>
+
 
 <header class="header">
 
 <h1>Flipkart Ads Optimization Assistant</h1>
 
 </header>
-  <div class="filter-bar">
+
+
+
+<!-- FILTER BAR -->
+
+<div class="filter-bar">
 
 <select id="acc-filter">
 <option value="">All ACC</option>
@@ -33,10 +44,21 @@
 
 <input type="date" id="end-date">
 
+<input
+type="text"
+id="campaign-search"
+placeholder="Search campaign..."
+onkeyup="searchCampaign()"
+>
+
 <button onclick="applyFilters()">Apply</button>
 
 </div>
-  
+
+
+
+<!-- LOADER -->
+
 <div id="loader">
 
 <div class="loader-box">
@@ -44,7 +66,9 @@
 <h2>Loading Ads Data</h2>
 
 <div class="progress-bar">
+
 <div id="progress-fill"></div>
+
 </div>
 
 <p id="progress-text">0%</p>
@@ -53,33 +77,44 @@
 
 </div>
 
+
+
 <div class="container">
 
 
-<!-- SUMMARY CARDS -->
+<!-- SUMMARY -->
 
 <section class="summary">
 
 <div class="card urgent">
+
 <h3>Urgent Issues</h3>
+
 <p id="urgent-count">0</p>
+
 </div>
 
 <div class="card growth">
+
 <h3>Growth Opportunities</h3>
+
 <p id="growth-count">0</p>
+
 </div>
 
 <div class="card optimize">
+
 <h3>Optimizations</h3>
+
 <p id="optimize-count">0</p>
+
 </div>
 
 </section>
 
 
 
-<!-- REPORT TABS -->
+<!-- TABS -->
 
 <div class="tabs">
 
@@ -106,8 +141,6 @@ Placement Analysis
 </div>
 
 
-
-<!-- TAB CONTENT -->
 
 <div class="tab-content">
 
@@ -162,6 +195,7 @@ Placement Analysis
 
 
 </div>
+
 
 </div>
 
