@@ -6,10 +6,9 @@ import { renderDecisions } from "./renderers/decisionRenderer.js"
 
 import { runDecisionEngine } from "./engines/decisions/decisionEngine.js"
 
-import { filterData } from "./core/filterEngine.js"
-
 import { renderSummary } from "./renderers/summaryRenderer.js"
 import { renderSummaryChart } from "./renderers/chartRenderer.js"
+
 
 
 let filteredData = []
@@ -57,23 +56,80 @@ renderDecisions(decisions)
 
 
 
-/* FILTERS */
+/* FILTER LOGIC */
 
 window.applyFilters = function(){
+
+let data = [...dataStore.CDR]
 
 const acc = document.getElementById("acc-filter").value
 const month = document.getElementById("month-filter").value
 const start = document.getElementById("start-date").value
 const end = document.getElementById("end-date").value
+const search = document.getElementById("campaign-search").value.toLowerCase()
 
-filteredData = filterData(dataStore.CDR,{
-acc,
-month,
-startDate:start,
-endDate:end
+
+
+/* reset month if date used */
+
+if(start || end){
+
+document.getElementById("month-filter").value = ""
+
+}
+
+
+
+/* reset date if month used */
+
+if(month){
+
+document.getElementById("start-date").value = ""
+document.getElementById("end-date").value = ""
+
+}
+
+
+
+/* ACC filter */
+
+if(acc){
+
+data = data.filter(r => r["ACC"] === acc)
+
+}
+
+
+
+/* MONTH filter */
+
+if(month){
+
+data = data.filter(r => {
+
+const date = new Date(r["Date"])
+
+const m = date.toLocaleString("default",{month:"short",year:"numeric"})
+
+return m === month
+
 })
 
-renderAll()
+}
+
+
+
+/* DATE RANGE */
+
+if(start){
+
+data = data.filter(r => new Date(r["Date"]) >= new Date(start))
+
+}
+
+if(end){
+
+data = data.filter(r => new Date(r["Date"]) <= new Date(end))
 
 }
 
@@ -81,22 +137,33 @@ renderAll()
 
 /* SEARCH */
 
-window.searchCampaign = function(){
+if(search){
 
-const search = document
-.getElementById("campaign-search")
-.value
-.toLowerCase()
+data = data.filter(r =>
 
-filteredData = dataStore.CDR.filter(row =>
-
-row["Campaign Name"]
+r["Campaign Name"]
 .toLowerCase()
 .includes(search)
 
 )
 
+}
+
+
+
+filteredData = data
+
 renderAll()
+
+}
+
+
+
+/* SEARCH LIVE */
+
+window.searchCampaign = function(){
+
+applyFilters()
 
 }
 
@@ -106,15 +173,15 @@ renderAll()
 
 function populateACC(){
 
-const accSet = new Set()
+const set = new Set()
 
-dataStore.CDR.forEach(row=>{
-if(row["ACC"]) accSet.add(row["ACC"])
+dataStore.CDR.forEach(r=>{
+if(r["ACC"]) set.add(r["ACC"])
 })
 
 const select = document.getElementById("acc-filter")
 
-accSet.forEach(acc=>{
+set.forEach(acc=>{
 
 const option = document.createElement("option")
 
@@ -131,21 +198,21 @@ select.appendChild(option)
 
 function populateMonths(){
 
-const months = new Set()
+const set = new Set()
 
-dataStore.CDR.forEach(row=>{
+dataStore.CDR.forEach(r=>{
 
-const date = new Date(row["Date"])
+const d = new Date(r["Date"])
 
-const month = date.toLocaleString("default",{month:"short",year:"numeric"})
+const m = d.toLocaleString("default",{month:"short",year:"numeric"})
 
-months.add(month)
+set.add(m)
 
 })
 
 const select = document.getElementById("month-filter")
 
-months.forEach(m=>{
+set.forEach(m=>{
 
 const option = document.createElement("option")
 
@@ -168,7 +235,6 @@ const fill = document.getElementById("progress-fill")
 const text = document.getElementById("progress-text")
 
 if(fill) fill.style.width = percent + "%"
-
 if(text) text.innerText = percent + "%"
 
 }
