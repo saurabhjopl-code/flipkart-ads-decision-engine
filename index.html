@@ -1,35 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
+
 <title>Flipkart Ads Optimization Assistant</title>
 
 <link rel="stylesheet" href="./css/layout.css">
 
+<link rel="icon" href="data:,">
+
 </head>
 
 <body>
-  <div id="loading-screen">
-
-<div class="loading-box">
-
-<h2>Loading Flipkart Ads Data...</h2>
-
-<div class="progress-bar">
-<div id="progress-fill"></div>
-</div>
-
-<p id="progress-text">0%</p>
-
-</div>
-
-</div>
 
 <header class="header">
 
-<div class="logo">
-Flipkart Ads Optimization Assistant
-</div>
+<h1>Flipkart Ads Optimization Assistant</h1>
 
 </header>
 
@@ -60,32 +47,97 @@ Flipkart Ads Optimization Assistant
 
 
 
-<!-- DECISION CENTER -->
+<!-- REPORT TABS -->
 
-<section>
+<div class="tabs">
+
+<button class="tab active" onclick="showTab('decision-tab')">
+Decision Center
+</button>
+
+<button class="tab" onclick="showTab('campaign-tab')">
+Campaign Analysis
+</button>
+
+<button class="tab" onclick="showTab('keyword-tab')">
+Keyword Analysis
+</button>
+
+<button class="tab" onclick="showTab('product-tab')">
+Product Analysis
+</button>
+
+<button class="tab" onclick="showTab('placement-tab')">
+Placement Analysis
+</button>
+
+</div>
+
+
+
+<!-- TAB CONTENT -->
+
+<div class="tab-content">
+
+
+<div id="decision-tab" class="tab-panel active">
 
 <h2>Decision Center</h2>
 
 <div id="decision-table"></div>
 
-</section>
+</div>
 
 
 
-<!-- RAW DATA -->
-
-<section>
+<div id="campaign-tab" class="tab-panel">
 
 <h2>Campaign Data</h2>
 
-<div id="data-table"></div>
-
-</section>
+<div id="campaign-table"></div>
 
 </div>
 
 
+
+<div id="keyword-tab" class="tab-panel">
+
+<h2>Keyword Data</h2>
+
+<div id="keyword-table"></div>
+
+</div>
+
+
+
+<div id="product-tab" class="tab-panel">
+
+<h2>Product Performance</h2>
+
+<div id="product-table"></div>
+
+</div>
+
+
+
+<div id="placement-tab" class="tab-panel">
+
+<h2>Placement Performance</h2>
+
+<div id="placement-table"></div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script src="./js/ui/tabController.js"></script>
+
 <script type="module" src="./js/binder.js"></script>
 
 </body>
+
 </html>
