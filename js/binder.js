@@ -1,19 +1,28 @@
 import { analyzeKeywords } from "./engines/analysis/keywordAnalysisEngine.js"
-import { detectWaste } from "./engines/intelligence/wasteDetectionEngine.js"
-import { detectScaling } from "./engines/intelligence/scalingOpportunityEngine.js"
+import { recommendBids } from "./engines/optimization/bidRecommendationEngine.js"
+import { allocateBudget } from "./engines/optimization/budgetAllocationEngine.js"
+import { forecastGrowth } from "./engines/optimization/growthForecastEngine.js"
 
-function runAssistant(){
+function runBrain(){
 
 const keywordData = analyzeKeywords()
 
-const waste = detectWaste(keywordData)
+const bidSuggestions = recommendBids(keywordData)
 
-const scaling = detectScaling(keywordData)
+const budgetSuggestions = allocateBudget(keywordData)
 
-const decisions = [...waste,...scaling]
+const forecasts = forecastGrowth(keywordData)
 
-console.log(decisions)
+const allDecisions = [
+
+...bidSuggestions,
+...budgetSuggestions,
+...forecasts
+
+]
+
+console.log(allDecisions)
 
 }
 
-runAssistant()
+runBrain()
