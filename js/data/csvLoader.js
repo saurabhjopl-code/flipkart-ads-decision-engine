@@ -2,24 +2,54 @@ import { dataStore } from "./dataStore.js"
 import { SHEET_URLS } from "../config/sheetConfig.js"
 
 
+/* CSV PARSER (handles commas inside quotes) */
 
-async function loadSheet(key, url){
+function parseCSV(text){
 
-const res = await fetch(url)
+const rows = []
+let current = ""
+let insideQuotes = false
+let row = []
 
-const text = await res.text()
+for(let i=0;i<text.length;i++){
 
-const rows = text.split("\n").map(r => r.split(","))
+const char = text[i]
+
+if(char === '"'){
+insideQuotes = !insideQuotes
+continue
+}
+
+if(char === "," && !insideQuotes){
+row.push(current)
+current = ""
+continue
+}
+
+if(char === "\n" && !insideQuotes){
+row.push(current)
+rows.push(row)
+row = []
+current = ""
+continue
+}
+
+current += char
+
+}
+
+row.push(current)
+rows.push(row)
 
 const headers = rows.shift()
 
-const data = rows.map(row=>{
+return rows.map(r=>{
 
 const obj = {}
 
 headers.forEach((h,i)=>{
 
-obj[h.trim()] = row[i]
+obj[h.trim()] = r[i]
 
 })
 
@@ -27,7 +57,17 @@ return obj
 
 })
 
-dataStore[key] = data
+}
+
+
+
+async function loadSheet(key,url){
+
+const res = await fetch(url)
+
+const text = await res.text()
+
+dataStore[key] = parseCSV(text)
 
 }
 
@@ -43,7 +83,7 @@ await Promise.all(
 
 keys.map(async key => {
 
-await loadSheet(key, SHEET_URLS[key])
+await loadSheet(key,SHEET_URLS[key])
 
 loaded++
 
