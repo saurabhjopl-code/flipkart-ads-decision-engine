@@ -5,11 +5,11 @@ import { renderTable } from "./renderers/tableRenderer.js"
 import { renderDecisions } from "./renderers/decisionRenderer.js"
 
 import { runDecisionEngine } from "./engines/decisions/decisionEngine.js"
+
 import { filterData } from "./core/filterEngine.js"
 
 import { renderSummary } from "./renderers/summaryRenderer.js"
 import { renderSummaryChart } from "./renderers/chartRenderer.js"
-
 
 
 let filteredData = []
@@ -57,9 +57,7 @@ renderDecisions(decisions)
 
 
 
-/* -------------------
-FILTERS
-------------------- */
+/* FILTERS */
 
 window.applyFilters = function(){
 
@@ -81,9 +79,7 @@ renderAll()
 
 
 
-/* -------------------
-SEARCH
-------------------- */
+/* SEARCH */
 
 window.searchCampaign = function(){
 
@@ -106,16 +102,14 @@ renderAll()
 
 
 
-/* -------------------
-ACC DROPDOWN
-------------------- */
+/* DROPDOWNS */
 
 function populateACC(){
 
 const accSet = new Set()
 
 dataStore.CDR.forEach(row=>{
-accSet.add(row["ACC"])
+if(row["ACC"]) accSet.add(row["ACC"])
 })
 
 const select = document.getElementById("acc-filter")
@@ -134,10 +128,6 @@ select.appendChild(option)
 }
 
 
-
-/* -------------------
-MONTH DROPDOWN
-------------------- */
 
 function populateMonths(){
 
@@ -170,9 +160,7 @@ select.appendChild(option)
 
 
 
-/* -------------------
-PROGRESS
-------------------- */
+/* LOADER */
 
 function updateProgress(percent){
 
