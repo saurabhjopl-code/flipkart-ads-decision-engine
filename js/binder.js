@@ -63,3 +63,12 @@ text.innerText = percent + "%"
 }
 
 }
+function hideLoader(){
+
+const loader = document.getElementById("loading-screen")
+
+if(loader){
+loader.style.display = "none"
+}
+
+}
