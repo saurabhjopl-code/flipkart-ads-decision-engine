@@ -5,6 +5,8 @@ import { keywordRules } from "./keywordRules.js"
 import { productRules } from "./productRules.js"
 import { placementRules } from "./placementRules.js"
 
+import { prioritizeDecisions } from "../intelligence/decisionPriorityEngine.js"
+
 
 
 export function runDecisionEngine(){
@@ -27,6 +29,10 @@ decisions = decisions.concat(
 placementRules(dataStore.PPR)
 )
 
-return decisions
+/* PRIORITY ENGINE */
+
+const ranked = prioritizeDecisions(decisions)
+
+return ranked
 
 }
