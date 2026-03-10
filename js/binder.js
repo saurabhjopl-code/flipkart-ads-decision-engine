@@ -1,11 +1,19 @@
-import { loadAllSheets } from "./data/csvLoader.js"
+import { analyzeKeywords } from "./engines/analysis/keywordAnalysisEngine.js"
+import { detectWaste } from "./engines/intelligence/wasteDetectionEngine.js"
+import { detectScaling } from "./engines/intelligence/scalingOpportunityEngine.js"
 
-async function startApp(){
+function runAssistant(){
 
-await loadAllSheets()
+const keywordData = analyzeKeywords()
 
-console.log("Ads data loaded")
+const waste = detectWaste(keywordData)
+
+const scaling = detectScaling(keywordData)
+
+const decisions = [...waste,...scaling]
+
+console.log(decisions)
 
 }
 
-startApp()
+runAssistant()
