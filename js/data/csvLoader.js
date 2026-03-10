@@ -1,5 +1,5 @@
 import { dataStore } from "./dataStore.js"
-import { sheetUrls } from "../config/sheetConfig.js"
+import { SHEET_URLS } from "../config/sheetConfig.js"
 
 
 
@@ -35,17 +35,15 @@ dataStore[key] = data
 
 export async function loadAllSheets(updateProgress){
 
-const keys = Object.keys(sheetUrls)
+const keys = Object.keys(SHEET_URLS)
 
 let loaded = 0
-
-
 
 await Promise.all(
 
 keys.map(async key => {
 
-await loadSheet(key, sheetUrls[key])
+await loadSheet(key, SHEET_URLS[key])
 
 loaded++
 
