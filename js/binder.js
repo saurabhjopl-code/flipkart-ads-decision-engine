@@ -32,9 +32,27 @@ applyFilters()
 
 
 
-/* ---------------------------
-MAIN RENDER
---------------------------- */
+/* SAFE DATE PARSER */
+
+function parseDate(dateStr){
+
+if(!dateStr) return null
+
+const parts = dateStr.split("-")
+
+if(parts.length !== 3) return new Date(dateStr)
+
+const day = parts[0]
+const month = parts[1]
+const year = parts[2]
+
+return new Date(`${year}-${month}-${day}`)
+
+}
+
+
+
+/* RENDER */
 
 function renderAll(){
 
@@ -60,21 +78,20 @@ renderDecisions(decisions)
 
 
 
-/* ---------------------------
-DEFAULT MONTH
---------------------------- */
+/* DEFAULT MONTH */
 
 function setDefaultMonth(){
 
 const today = new Date()
 
-const month = today.toLocaleString("default",{month:"short",year:"numeric"})
+const month = today.getMonth()
+const year = today.getFullYear()
 
 const select = document.getElementById("month-filter")
 
 if(select){
 
-select.value = month
+select.value = `${month}-${year}`
 
 }
 
@@ -82,9 +99,7 @@ select.value = month
 
 
 
-/* ---------------------------
-FILTER ENGINE
---------------------------- */
+/* FILTERS */
 
 window.applyFilters = function(){
 
@@ -98,23 +113,6 @@ const search = document.getElementById("campaign-search").value.toLowerCase()
 
 
 
-if(start || end){
-
-document.getElementById("month-filter").value = ""
-
-}
-
-if(month){
-
-document.getElementById("start-date").value = ""
-document.getElementById("end-date").value = ""
-
-}
-
-
-
-/* ACC */
-
 if(acc){
 
 data = data.filter(r => r["ACC"] === acc)
@@ -123,17 +121,17 @@ data = data.filter(r => r["ACC"] === acc)
 
 
 
-/* MONTH */
+/* MONTH FILTER */
 
 if(month){
 
+const [m,y] = month.split("-")
+
 data = data.filter(r => {
 
-const date = new Date(r["Date"])
+const d = parseDate(r["Date"])
 
-const m = date.toLocaleString("default",{month:"short",year:"numeric"})
-
-return m === month
+return d.getMonth() == m && d.getFullYear() == y
 
 })
 
@@ -145,13 +143,17 @@ return m === month
 
 if(start){
 
-data = data.filter(r => new Date(r["Date"]) >= new Date(start))
+const s = new Date(start)
+
+data = data.filter(r => parseDate(r["Date"]) >= s)
 
 }
 
 if(end){
 
-data = data.filter(r => new Date(r["Date"]) <= new Date(end))
+const e = new Date(end)
+
+data = data.filter(r => parseDate(r["Date"]) <= e)
 
 }
 
@@ -181,9 +183,7 @@ renderAll()
 
 
 
-/* ---------------------------
-SEARCH
---------------------------- */
+/* SEARCH */
 
 window.searchCampaign = function(){
 
@@ -193,9 +193,7 @@ applyFilters()
 
 
 
-/* ---------------------------
-ACC DROPDOWN
---------------------------- */
+/* ACC DROPDOWN */
 
 function populateACC(){
 
@@ -222,9 +220,7 @@ select.appendChild(option)
 
 
 
-/* ---------------------------
-MONTH DROPDOWN
---------------------------- */
+/* MONTH DROPDOWN */
 
 function populateMonths(){
 
@@ -232,22 +228,28 @@ const set = new Set()
 
 dataStore.CDR.forEach(r=>{
 
-const d = new Date(r["Date"])
+const d = parseDate(r["Date"])
 
-const m = d.toLocaleString("default",{month:"short",year:"numeric"})
+const key = `${d.getMonth()}-${d.getFullYear()}`
 
-set.add(m)
+set.add(key)
 
 })
 
 const select = document.getElementById("month-filter")
 
-set.forEach(m=>{
+set.forEach(key=>{
+
+const [m,y] = key.split("-")
+
+const date = new Date(y,m)
+
+const label = date.toLocaleString("default",{month:"short",year:"numeric"})
 
 const option = document.createElement("option")
 
-option.value = m
-option.textContent = m
+option.value = key
+option.textContent = label
 
 select.appendChild(option)
 
@@ -257,9 +259,7 @@ select.appendChild(option)
 
 
 
-/* ---------------------------
-MONTHLY CONSOLIDATION
---------------------------- */
+/* MONTHLY TABLE */
 
 function buildMonthlyTable(data){
 
@@ -270,10 +270,11 @@ data.forEach(r=>{
 const acc = r["ACC"]
 const campaign = r["Campaign Name"]
 
-const d = new Date(r["Date"])
-const month = d.toLocaleString("default",{month:"short",year:"numeric"})
+const d = parseDate(r["Date"])
+const month = d.getMonth()
+const year = d.getFullYear()
 
-const key = acc+"-"+campaign+"-"+month
+const key = acc+"-"+campaign+"-"+month+"-"+year
 
 if(!map[key]){
 
@@ -281,7 +282,7 @@ map[key] = {
 
 ACC:acc,
 Campaign:campaign,
-Month:month,
+Month:`${month+1}-${year}`,
 
 "Ad Spend":0,
 Views:0,
@@ -307,9 +308,7 @@ return Object.values(map)
 
 
 
-/* ---------------------------
-LOADER
---------------------------- */
+/* LOADER */
 
 function updateProgress(percent){
 
