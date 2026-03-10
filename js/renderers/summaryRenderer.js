@@ -1,38 +1,69 @@
-export function renderSummary(data){
+let summaryChart = null
 
-let spend = 0
-let views = 0
-let clicks = 0
-let units = 0
-let revenue = 0
+export function renderSummaryChart(data){
+
+const map = {}
 
 data.forEach(r=>{
 
-spend += Number(r["Ad Spend"] || 0)
-views += Number(r["Views"] || 0)
-clicks += Number(r["Clicks"] || 0)
-units += Number(r["Total converted units"] || 0)
-revenue += Number(r["Total Revenue (Rs.)"] || 0)
+const d = r["Date"]
+
+if(!map[d]){
+
+map[d] = {
+spend:0,
+revenue:0
+}
+
+}
+
+map[d].spend += Number(r["Ad Spend"] || 0)
+map[d].revenue += Number(r["Total Revenue (Rs.)"] || 0)
 
 })
 
-const roi = revenue / (spend || 1)
+const labels = Object.keys(map)
 
-const ctr = (clicks / views) * 100
+const spend = labels.map(d => map[d].spend)
+const revenue = labels.map(d => map[d].revenue)
 
-const cvr = (units / clicks) * 100
+const canvas = document.getElementById("summary-chart")
 
-document.getElementById("summary-cards").innerHTML = `
+if(!canvas) return
 
-<div class="kpi">Ad Spends ₹${spend.toFixed(0)}</div>
-<div class="kpi">ROI ${roi.toFixed(2)}</div>
-<div class="kpi">Views ${views}</div>
-<div class="kpi">Clicks ${clicks}</div>
-<div class="kpi">CTR ${ctr.toFixed(2)}%</div>
-<div class="kpi">Units ${units}</div>
-<div class="kpi">CVR ${cvr.toFixed(2)}%</div>
-<div class="kpi">GMV ₹${revenue.toFixed(0)}</div>
+const ctx = canvas.getContext("2d")
 
-`
+/* destroy previous chart */
+
+if(summaryChart){
+summaryChart.destroy()
+}
+
+summaryChart = new Chart(ctx,{
+type:"line",
+data:{
+labels,
+datasets:[
+{
+label:"Ad Spend",
+data:spend,
+borderColor:"#2ed573",
+fill:false
+},
+{
+label:"Revenue",
+data:revenue,
+borderColor:"#ff4757",
+fill:false
+}
+]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{position:"top"}
+}
+}
+})
 
 }
