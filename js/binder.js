@@ -18,8 +18,11 @@ import { renderBudgetSuggestions } from "./renderers/budgetRenderer.js"
 import { mineKeywords } from "./engines/intelligence/keywordMiningEngine.js"
 import { renderKeywordMining } from "./renderers/keywordMiningRenderer.js"
 
-let filteredData = []
 
+let filteredCDR = []
+let filteredCKR = []
+let filteredCFR = []
+let filteredPPR = []
 
 
 async function startApp(){
@@ -39,9 +42,7 @@ applyFilters()
 
 
 
-/* ------------------------------
-DATE PARSER (DD/MM/YYYY)
------------------------------- */
+/* DATE PARSER */
 
 function parseDate(dateStr){
 
@@ -61,72 +62,42 @@ return new Date(year, month, day)
 
 
 
-/* ------------------------------
-MAIN RENDER
------------------------------- */
+/* RENDER */
 
 function renderAll(){
 
-renderSummary(filteredData)
+renderSummary(filteredCDR)
 
-renderSummaryChart(filteredData)
+renderSummaryChart(filteredCDR)
 
-renderTable("campaign-table", filteredData)
+renderTable("campaign-table", filteredCDR)
 
-renderTable("summary-table", buildMonthlyTable(filteredData))
+renderTable("summary-table", buildMonthlyTable(filteredCDR))
 
-renderTable("keyword-table", dataStore.CKR)
-renderTable("product-table", dataStore.CFR)
-renderTable("placement-table", dataStore.PPR)
+renderTable("keyword-table", filteredCKR)
+renderTable("product-table", filteredCFR)
+renderTable("placement-table", filteredPPR)
 
 const decisions = runDecisionEngine()
-
 renderTable("decision-table", decisions)
-
 renderDecisions(decisions)
 
-const health = calculateCampaignHealth(filteredData)
+const health = calculateCampaignHealth(filteredCDR)
 renderCampaignHealth(health)
 
-const budget = generateBudgetSuggestions(filteredData)
-
+const budget = generateBudgetSuggestions(filteredCDR)
 renderBudgetSuggestions(budget)
 
-  const keywordInsights = mineKeywords(dataStore.CKR)
-
+const keywordInsights = mineKeywords(filteredCKR)
 renderKeywordMining(keywordInsights)
 
 }
 
 
 
-/* ------------------------------
-DEFAULT MONTH
------------------------------- */
-
-function setDefaultMonth(){
-
-const today = new Date()
-
-const key = `${today.getMonth()}-${today.getFullYear()}`
-
-const select = document.getElementById("month-filter")
-
-if(select){
-select.value = key
-}
-
-}
-
-
-
-/* ------------------------------
-FILTER ENGINE
------------------------------- */
+/* FILTER ENGINE */
 
 window.applyFilters = function(){
-
-let data = [...dataStore.CDR]
 
 const acc = document.getElementById("acc-filter").value
 const month = document.getElementById("month-filter").value
@@ -135,84 +106,11 @@ const end = document.getElementById("end-date").value
 const search = document.getElementById("campaign-search").value.toLowerCase()
 
 
+filteredCDR = dataStore.CDR.filter(r=>filterRow(r,acc,month,start,end,search))
+filteredCKR = dataStore.CKR.filter(r=>filterRow(r,acc,month,start,end,search))
+filteredCFR = dataStore.CFR.filter(r=>filterRow(r,acc,month,start,end,search))
+filteredPPR = dataStore.PPR.filter(r=>filterRow(r,acc,month,start,end,search))
 
-/* ACC FILTER */
-
-if(acc){
-
-data = data.filter(r => r["ACC"] === acc)
-
-}
-
-
-
-/* MONTH FILTER */
-
-if(month){
-
-const [m,y] = month.split("-")
-
-data = data.filter(r => {
-
-const d = parseDate(r["Date"])
-
-if(!d) return false
-
-return d.getMonth() == m && d.getFullYear() == y
-
-})
-
-}
-
-
-
-/* DATE RANGE FILTER */
-
-if(start){
-
-const s = new Date(start)
-
-data = data.filter(r => {
-
-const d = parseDate(r["Date"])
-return d >= s
-
-})
-
-}
-
-if(end){
-
-const e = new Date(end)
-
-data = data.filter(r => {
-
-const d = parseDate(r["Date"])
-return d <= e
-
-})
-
-}
-
-
-
-/* SEARCH */
-
-if(search){
-
-data = data.filter(r =>
-
-r["Campaign Name"]
-.toLowerCase()
-.includes(search)
-
-)
-
-}
-
-
-
-filteredData = data
 
 renderAll()
 
@@ -220,9 +118,67 @@ renderAll()
 
 
 
-/* ------------------------------
-SEARCH
------------------------------- */
+/* UNIVERSAL FILTER FUNCTION */
+
+function filterRow(r,acc,month,start,end,search){
+
+if(acc && r["ACC"] !== acc) return false
+
+
+/* month */
+
+if(month){
+
+const [m,y] = month.split("-")
+
+const d = parseDate(r["Date"])
+
+if(d && !(d.getMonth()==m && d.getFullYear()==y)) return false
+
+}
+
+
+/* date range */
+
+if(start){
+
+const d = parseDate(r["Date"])
+
+if(d && d < new Date(start)) return false
+
+}
+
+if(end){
+
+const d = parseDate(r["Date"])
+
+if(d && d > new Date(end)) return false
+
+}
+
+
+/* campaign search */
+
+if(search){
+
+const campaignName = (r["Campaign Name"] || "").toLowerCase()
+const campaignId = (r["Campaign ID"] || "").toLowerCase()
+
+if(!campaignName.includes(search) && !campaignId.includes(search)){
+
+return false
+
+}
+
+}
+
+return true
+
+}
+
+
+
+/* SEARCH */
 
 window.searchCampaign = function(){
 
@@ -232,9 +188,7 @@ applyFilters()
 
 
 
-/* ------------------------------
-ACC DROPDOWN
------------------------------- */
+/* ACC DROPDOWN */
 
 function populateACC(){
 
@@ -261,9 +215,7 @@ select.appendChild(option)
 
 
 
-/* ------------------------------
-MONTH DROPDOWN
------------------------------- */
+/* MONTH DROPDOWN */
 
 function populateMonths(){
 
@@ -304,9 +256,21 @@ select.appendChild(option)
 
 
 
-/* ------------------------------
-MONTHLY TABLE BUILD
------------------------------- */
+/* DEFAULT MONTH */
+
+function setDefaultMonth(){
+
+const today = new Date()
+
+const key = `${today.getMonth()}-${today.getFullYear()}`
+
+document.getElementById("month-filter").value = key
+
+}
+
+
+
+/* MONTHLY TABLE */
 
 function buildMonthlyTable(data){
 
@@ -358,9 +322,7 @@ return Object.values(map)
 
 
 
-/* ------------------------------
-LOADER
------------------------------- */
+/* LOADER */
 
 function updateProgress(percent){
 
@@ -371,8 +333,6 @@ if(fill) fill.style.width = percent + "%"
 if(text) text.innerText = percent + "%"
 
 }
-
-
 
 function hideLoader(){
 
