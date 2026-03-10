@@ -15,6 +15,9 @@ import { renderCampaignHealth } from "./renderers/healthRenderer.js"
 import { generateBudgetSuggestions } from "./engines/intelligence/budgetAllocationEngine.js"
 import { renderBudgetSuggestions } from "./renderers/budgetRenderer.js"
 
+import { mineKeywords } from "./engines/intelligence/keywordMiningEngine.js"
+import { renderKeywordMining } from "./renderers/keywordMiningRenderer.js"
+
 let filteredData = []
 
 
@@ -88,6 +91,10 @@ renderCampaignHealth(health)
 const budget = generateBudgetSuggestions(filteredData)
 
 renderBudgetSuggestions(budget)
+
+  const keywordInsights = mineKeywords(dataStore.CKR)
+
+renderKeywordMining(keywordInsights)
 
 }
 
