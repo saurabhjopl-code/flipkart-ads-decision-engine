@@ -18,6 +18,9 @@ import { renderBudgetSuggestions } from "./renderers/budgetRenderer.js"
 import { mineKeywords } from "./engines/intelligence/keywordMiningEngine.js"
 import { renderKeywordMining } from "./renderers/keywordMiningRenderer.js"
 
+import { getCampaignInsights } from "./engines/intelligence/campaignDrillEngine.js"
+import { renderCampaignDrill } from "./renderers/campaignDrillRenderer.js"
+
 
 let filteredCDR = []
 let filteredCKR = []
@@ -347,3 +350,11 @@ loader.style.display = "none"
 
 
 startApp()
+
+window.openCampaignDrill=function(campaign){
+
+const insights=getCampaignInsights(campaign,dataStore)
+
+renderCampaignDrill(insights)
+
+}
