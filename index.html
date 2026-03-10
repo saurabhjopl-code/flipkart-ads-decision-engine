@@ -168,6 +168,15 @@ Keyword Opportunities
 
 <h2>Decision Center</h2>
 
+<select id="decision-filter" onchange="filterDecisionTable()">
+<option value="">All Recommendations</option>
+<option value="Pause">Pause</option>
+<option value="Increase">Increase</option>
+<option value="Reduce">Reduce</option>
+<option value="Improve">Improve</option>
+<option value="Scale">Scale</option>
+</select>
+
 <div id="decision-table"></div>
 
 </div>
@@ -222,6 +231,13 @@ Keyword Opportunities
 
 <h2>Campaign Health Score</h2>
 
+<select id="health-filter" onchange="filterHealthTable()">
+<option value="">All Status</option>
+<option value="Scale">Scale</option>
+<option value="Optimize">Optimize</option>
+<option value="Fix">Fix</option>
+</select>
+
 <div id="campaign-health"></div>
 
 </div>
@@ -237,6 +253,14 @@ Keyword Opportunities
   <div id="keyword-opportunity-tab" class="tab-panel">
 
 <h2>Keyword Opportunities</h2>
+
+<select id="keyword-filter" onchange="filterKeywordTable()">
+<option value="">All Actions</option>
+<option value="Increase Bid">Increase Bid</option>
+<option value="Promote to Exact Match">Promote to Exact Match</option>
+<option value="Add Negative / Pause">Add Negative / Pause</option>
+<option value="Increase Visibility">Increase Visibility</option>
+</select>
 
 <div id="keyword-mining"></div>
 
