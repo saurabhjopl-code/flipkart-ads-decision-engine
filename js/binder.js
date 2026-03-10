@@ -9,6 +9,9 @@ import { runDecisionEngine } from "./engines/decisions/decisionEngine.js"
 import { renderSummary } from "./renderers/summaryRenderer.js"
 import { renderSummaryChart } from "./renderers/chartRenderer.js"
 
+import { calculateCampaignHealth } from "./engines/intelligence/campaignHealthEngine.js"
+import { renderCampaignHealth } from "./renderers/healthRenderer.js"
+
 
 
 let filteredData = []
@@ -77,6 +80,9 @@ const decisions = runDecisionEngine()
 renderTable("decision-table", decisions)
 
 renderDecisions(decisions)
+
+const health = calculateCampaignHealth(filteredData)
+renderCampaignHealth(health)
 
 }
 
