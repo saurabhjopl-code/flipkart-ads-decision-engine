@@ -12,7 +12,9 @@ import { runDecisionEngine } from "./engines/decisions/decisionEngine.js"
 
 async function startApp(){
 
-await loadAllSheets()
+await loadAllSheets(updateProgress)
+
+hideLoader()
 
 console.log("Data Loaded")
 
