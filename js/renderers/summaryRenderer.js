@@ -1,10 +1,16 @@
 export function renderSummary(data){
 
+const container = document.getElementById("summary-cards")
+
+if(!container) return
+
+
 let spend = 0
 let views = 0
 let clicks = 0
 let units = 0
 let revenue = 0
+
 
 data.forEach(r=>{
 
@@ -16,50 +22,56 @@ revenue += Number(r["Total Revenue (Rs.)"] || 0)
 
 })
 
-const roi = spend ? (revenue/spend).toFixed(2) : 0
-const ctr = views ? ((clicks/views)*100).toFixed(2) : 0
-const cvr = clicks ? ((units/clicks)*100).toFixed(2) : 0
 
-document.getElementById("summary-cards").innerHTML = `
+const roi = spend ? (revenue/spend).toFixed(2) : "0"
+const ctr = views ? ((clicks/views)*100).toFixed(2) : "0"
+const cvr = clicks ? ((units/clicks)*100).toFixed(2) : "0"
+
+
+container.innerHTML = `
+
+<div class="kpi-grid">
 
 <div class="kpi-card">
-<h4>Ad Spends</h4>
-<p>₹${spend.toLocaleString()}</p>
+<span>Ad Spends</span>
+<strong>₹${spend.toLocaleString()}</strong>
 </div>
 
 <div class="kpi-card">
-<h4>ROI</h4>
-<p>${roi}</p>
+<span>ROI</span>
+<strong>${roi}</strong>
 </div>
 
 <div class="kpi-card">
-<h4>Views</h4>
-<p>${views.toLocaleString()}</p>
+<span>Views</span>
+<strong>${views.toLocaleString()}</strong>
 </div>
 
 <div class="kpi-card">
-<h4>Clicks</h4>
-<p>${clicks.toLocaleString()}</p>
+<span>Clicks</span>
+<strong>${clicks.toLocaleString()}</strong>
 </div>
 
 <div class="kpi-card">
-<h4>CTR</h4>
-<p>${ctr}%</p>
+<span>CTR</span>
+<strong>${ctr}%</strong>
 </div>
 
 <div class="kpi-card">
-<h4>Total Units</h4>
-<p>${units}</p>
+<span>Total Units Sold</span>
+<strong>${units}</strong>
 </div>
 
 <div class="kpi-card">
-<h4>CVR</h4>
-<p>${cvr}%</p>
+<span>CVR</span>
+<strong>${cvr}%</strong>
 </div>
 
 <div class="kpi-card">
-<h4>GMV</h4>
-<p>₹${revenue.toLocaleString()}</p>
+<span>GMV</span>
+<strong>₹${revenue.toLocaleString()}</strong>
+</div>
+
 </div>
 
 `
