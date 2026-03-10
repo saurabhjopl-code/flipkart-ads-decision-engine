@@ -473,3 +473,10 @@ showTab("placement-tab")
 
 }
 
+window.clearGlobalSearch = function(){
+
+document.getElementById("global-search").value=""
+
+document.getElementById("search-results").innerHTML=""
+
+}
