@@ -4,9 +4,7 @@ const container=document.getElementById("campaign-drill")
 
 if(!container)return
 
-
 let html=`<h2>${data.campaign}</h2>`
-
 
 html+=`
 
@@ -40,24 +38,18 @@ html+=`
 </div>
 `
 
-
 html+=`<h3>Top Keywords</h3>`
 html+=buildTable(data.topKeywords)
-
 
 html+=`<h3>Top Products</h3>`
 html+=buildTable(data.topProducts)
 
-
 html+=`<h3>Placement Performance</h3>`
 html+=buildTable(data.placements)
-
 
 container.innerHTML=html
 
 }
-
-
 
 function buildTable(data){
 
@@ -75,7 +67,6 @@ html+=`<th>${h}</th>`
 
 html+="</tr></thead><tbody>"
 
-
 data.forEach(r=>{
 
 html+="<tr>"
@@ -89,7 +80,6 @@ html+=`<td>${r[h]}</td>`
 html+="</tr>"
 
 })
-
 
 html+="</tbody></table>"
 
