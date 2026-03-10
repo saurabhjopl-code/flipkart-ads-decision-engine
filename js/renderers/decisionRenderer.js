@@ -1,16 +1,21 @@
 export function renderDecisions(decisions){
 
-const container = document.getElementById("decision-summary")
+let urgent = 0
+let growth = 0
+let optimize = 0
 
-let urgent = decisions.filter(d => d.priority === "High").length
+decisions.forEach(d=>{
 
-let medium = decisions.filter(d => d.priority === "Medium").length
+if(d.priority === "High") urgent++
 
-container.innerHTML = `
+else if(d.recommendation.includes("Increase")) growth++
 
-<p>⚠ Urgent Actions: ${urgent}</p>
-<p>🛠 Optimization Needed: ${medium}</p>
+else optimize++
 
-`
+})
+
+document.getElementById("urgent-count").innerText = urgent
+document.getElementById("growth-count").innerText = growth
+document.getElementById("optimize-count").innerText = optimize
 
 }
