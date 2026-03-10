@@ -1,28 +1,47 @@
-import { analyzeKeywords } from "./engines/analysis/keywordAnalysisEngine.js"
-import { recommendBids } from "./engines/optimization/bidRecommendationEngine.js"
-import { allocateBudget } from "./engines/optimization/budgetAllocationEngine.js"
-import { forecastGrowth } from "./engines/optimization/growthForecastEngine.js"
+import { loadAllSheets } from "./data/csvLoader.js"
 
-function runBrain(){
+import { dataStore } from "./data/dataStore.js"
 
-const keywordData = analyzeKeywords()
+import { renderTable } from "./renderers/tableRenderer.js"
 
-const bidSuggestions = recommendBids(keywordData)
+import { renderDecisions } from "./renderers/decisionRenderer.js"
 
-const budgetSuggestions = allocateBudget(keywordData)
+import { runDecisionEngine } from "./engines/decisions/decisionEngine.js"
 
-const forecasts = forecastGrowth(keywordData)
 
-const allDecisions = [
 
-...bidSuggestions,
-...budgetSuggestions,
-...forecasts
+async function startApp(){
 
-]
+await loadAllSheets()
 
-console.log(allDecisions)
+console.log("Data Loaded")
+
+showData()
+
+runAssistant()
 
 }
 
-runBrain()
+
+
+function showData(){
+
+renderTable("data-table", dataStore.CDR)
+
+}
+
+
+
+function runAssistant(){
+
+const decisions = runDecisionEngine()
+
+renderTable("decision-table", decisions)
+
+renderDecisions(decisions)
+
+}
+
+
+
+startApp()
