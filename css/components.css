@@ -184,9 +184,9 @@ min-width:180px;
 .command-bar{
 
 display:flex;
-justify-content:flex-end;
+justify-content:center;
 
-margin-bottom:10px;
+margin:10px 0;
 
 position:relative;
 
@@ -236,7 +236,8 @@ color:#000;
 
 position:absolute;
 top:32px;
-right:0;
+left:50%;
+transform:translateX(-50%);
 
 width:260px;
 
