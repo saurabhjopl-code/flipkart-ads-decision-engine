@@ -179,3 +179,54 @@ min-width:180px;
 
 }
 
+.command-bar{
+
+position:relative;
+margin:10px 0;
+
+}
+
+#global-search{
+
+width:100%;
+padding:10px;
+
+border-radius:6px;
+border:1px solid #ddd;
+
+font-size:14px;
+
+}
+
+#search-results{
+
+position:absolute;
+top:42px;
+
+width:100%;
+background:white;
+
+border:1px solid #ddd;
+
+border-radius:6px;
+
+max-height:300px;
+overflow:auto;
+
+z-index:999;
+
+}
+
+.search-item{
+
+padding:8px 10px;
+cursor:pointer;
+
+}
+
+.search-item:hover{
+
+background:#f5f5f5;
+
+}
+
