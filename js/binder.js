@@ -12,7 +12,8 @@ import { renderSummaryChart } from "./renderers/chartRenderer.js"
 import { calculateCampaignHealth } from "./engines/intelligence/campaignHealthEngine.js"
 import { renderCampaignHealth } from "./renderers/healthRenderer.js"
 
-
+import { generateBudgetSuggestions } from "./engines/intelligence/budgetAllocationEngine.js"
+import { renderBudgetSuggestions } from "./renderers/budgetRenderer.js"
 
 let filteredData = []
 
@@ -83,6 +84,10 @@ renderDecisions(decisions)
 
 const health = calculateCampaignHealth(filteredData)
 renderCampaignHealth(health)
+
+const budget = generateBudgetSuggestions(filteredData)
+
+renderBudgetSuggestions(budget)
 
 }
 
