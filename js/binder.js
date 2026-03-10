@@ -57,16 +57,20 @@ startApp()
 
 function updateProgress(percent){
 
-const bar = document.getElementById("progress-fill")
+const fill = document.getElementById("progress-fill")
 const text = document.getElementById("progress-text")
 
-if(bar){
-bar.style.width = percent + "%"
+if(fill) fill.style.width = percent + "%"
+
+if(text) text.innerText = percent + "%"
+
 }
 
-if(text){
-text.innerText = percent + "%"
-}
+function hideLoader(){
+
+const loader = document.getElementById("loader")
+
+if(loader) loader.style.display = "none"
 
 }
 function hideLoader(){
