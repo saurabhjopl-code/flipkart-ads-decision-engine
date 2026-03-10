@@ -24,6 +24,9 @@ let filteredCKR = []
 let filteredCFR = []
 let filteredPPR = []
 
+let searchTimer = null
+
+
 
 async function startApp(){
 
@@ -62,7 +65,7 @@ return new Date(year, month, day)
 
 
 
-/* RENDER */
+/* RENDER DASHBOARD */
 
 function renderAll(){
 
@@ -95,7 +98,7 @@ renderKeywordMining(keywordInsights)
 
 
 
-/* FILTER ENGINE */
+/* MAIN FILTER */
 
 window.applyFilters = function(){
 
@@ -111,21 +114,18 @@ filteredCKR = dataStore.CKR.filter(r=>filterRow(r,acc,month,start,end,search))
 filteredCFR = dataStore.CFR.filter(r=>filterRow(r,acc,month,start,end,search))
 filteredPPR = dataStore.PPR.filter(r=>filterRow(r,acc,month,start,end,search))
 
-
 renderAll()
 
 }
 
 
 
-/* UNIVERSAL FILTER FUNCTION */
+/* UNIVERSAL ROW FILTER */
 
 function filterRow(r,acc,month,start,end,search){
 
 if(acc && r["ACC"] !== acc) return false
 
-
-/* month */
 
 if(month){
 
@@ -137,8 +137,6 @@ if(d && !(d.getMonth()==m && d.getFullYear()==y)) return false
 
 }
 
-
-/* date range */
 
 if(start){
 
@@ -157,17 +155,13 @@ if(d && d > new Date(end)) return false
 }
 
 
-/* campaign search */
-
 if(search){
 
 const campaignName = (r["Campaign Name"] || "").toLowerCase()
 const campaignId = (r["Campaign ID"] || "").toLowerCase()
 
 if(!campaignName.includes(search) && !campaignId.includes(search)){
-
 return false
-
 }
 
 }
@@ -178,11 +172,17 @@ return true
 
 
 
-/* SEARCH */
+/* DEBOUNCED SEARCH */
 
 window.searchCampaign = function(){
 
+clearTimeout(searchTimer)
+
+searchTimer = setTimeout(()=>{
+
 applyFilters()
+
+},300)
 
 }
 
