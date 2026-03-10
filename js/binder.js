@@ -24,13 +24,17 @@ hideLoader()
 populateACC()
 populateMonths()
 
-filteredData = dataStore.CDR
+setDefaultMonth()
 
-renderAll()
+applyFilters()
 
 }
 
 
+
+/* ---------------------------
+MAIN RENDER
+--------------------------- */
 
 function renderAll(){
 
@@ -40,7 +44,7 @@ renderSummaryChart(filteredData)
 
 renderTable("campaign-table", filteredData)
 
-renderTable("summary-table", filteredData)
+renderTable("summary-table", buildMonthlyTable(filteredData))
 
 renderTable("keyword-table", dataStore.CKR)
 renderTable("product-table", dataStore.CFR)
@@ -56,7 +60,31 @@ renderDecisions(decisions)
 
 
 
-/* FILTER LOGIC */
+/* ---------------------------
+DEFAULT MONTH
+--------------------------- */
+
+function setDefaultMonth(){
+
+const today = new Date()
+
+const month = today.toLocaleString("default",{month:"short",year:"numeric"})
+
+const select = document.getElementById("month-filter")
+
+if(select){
+
+select.value = month
+
+}
+
+}
+
+
+
+/* ---------------------------
+FILTER ENGINE
+--------------------------- */
 
 window.applyFilters = function(){
 
@@ -70,17 +98,11 @@ const search = document.getElementById("campaign-search").value.toLowerCase()
 
 
 
-/* reset month if date used */
-
 if(start || end){
 
 document.getElementById("month-filter").value = ""
 
 }
-
-
-
-/* reset date if month used */
 
 if(month){
 
@@ -91,7 +113,7 @@ document.getElementById("end-date").value = ""
 
 
 
-/* ACC filter */
+/* ACC */
 
 if(acc){
 
@@ -101,7 +123,7 @@ data = data.filter(r => r["ACC"] === acc)
 
 
 
-/* MONTH filter */
+/* MONTH */
 
 if(month){
 
@@ -159,7 +181,9 @@ renderAll()
 
 
 
-/* SEARCH LIVE */
+/* ---------------------------
+SEARCH
+--------------------------- */
 
 window.searchCampaign = function(){
 
@@ -169,7 +193,9 @@ applyFilters()
 
 
 
-/* DROPDOWNS */
+/* ---------------------------
+ACC DROPDOWN
+--------------------------- */
 
 function populateACC(){
 
@@ -195,6 +221,10 @@ select.appendChild(option)
 }
 
 
+
+/* ---------------------------
+MONTH DROPDOWN
+--------------------------- */
 
 function populateMonths(){
 
@@ -227,7 +257,59 @@ select.appendChild(option)
 
 
 
-/* LOADER */
+/* ---------------------------
+MONTHLY CONSOLIDATION
+--------------------------- */
+
+function buildMonthlyTable(data){
+
+const map = {}
+
+data.forEach(r=>{
+
+const acc = r["ACC"]
+const campaign = r["Campaign Name"]
+
+const d = new Date(r["Date"])
+const month = d.toLocaleString("default",{month:"short",year:"numeric"})
+
+const key = acc+"-"+campaign+"-"+month
+
+if(!map[key]){
+
+map[key] = {
+
+ACC:acc,
+Campaign:campaign,
+Month:month,
+
+"Ad Spend":0,
+Views:0,
+Clicks:0,
+Units:0,
+Revenue:0
+
+}
+
+}
+
+map[key]["Ad Spend"] += Number(r["Ad Spend"]||0)
+map[key]["Views"] += Number(r["Views"]||0)
+map[key]["Clicks"] += Number(r["Clicks"]||0)
+map[key]["Units"] += Number(r["Total converted units"]||0)
+map[key]["Revenue"] += Number(r["Total Revenue (Rs.)"]||0)
+
+})
+
+return Object.values(map)
+
+}
+
+
+
+/* ---------------------------
+LOADER
+--------------------------- */
 
 function updateProgress(percent){
 
