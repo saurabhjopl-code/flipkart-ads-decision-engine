@@ -29,6 +29,9 @@ import { renderCampaignDrill } from "./renderers/campaignDrillRenderer.js"
 import { detectAlerts } from "./engines/intelligence/smartAlertsEngine.js"
 import { renderAlerts } from "./renderers/alertsRenderer.js"
 
+import { searchEntities } from "./engines/navigation/globalSearchEngine.js"
+import { renderSearchResults } from "./renderers/commandBarRenderer.js"
+
 let filteredCDR = []
 let filteredCKR = []
 let filteredCFR = []
@@ -416,6 +419,57 @@ k.Action === filter
 )
 
 renderKeywordMining(filtered)
+
+}
+
+window.runGlobalSearch = function(){
+
+const query = document.getElementById("global-search").value
+
+if(query.length < 2){
+document.getElementById("search-results").innerHTML=""
+return
+}
+
+const results = searchEntities(query,dataStore)
+
+renderSearchResults(results)
+
+}
+
+
+
+window.jumpToEntity = function(type,value){
+
+document.getElementById("search-results").innerHTML=""
+
+if(type === "Campaign"){
+
+showTab("campaign-tab")
+
+document.getElementById("campaign-search").value=value
+
+applyFilters()
+
+}
+
+if(type === "Keyword"){
+
+showTab("keyword-tab")
+
+}
+
+if(type === "Product"){
+
+showTab("product-tab")
+
+}
+
+if(type === "Placement"){
+
+showTab("placement-tab")
+
+}
 
 }
 
