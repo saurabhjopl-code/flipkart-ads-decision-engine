@@ -117,7 +117,9 @@ onkeyup="searchCampaign()"
 <!-- TABS -->
 
 <div class="tabs">
-
+<button class="tab active" onclick="showTab('summary-tab')">
+Summary
+</button>
 <button class="tab active" onclick="showTab('decision-tab')">
 Decision Center
 </button>
@@ -143,9 +145,23 @@ Placement Analysis
 
 
 <div class="tab-content">
+<div id="summary-tab" class="tab-panel active">
 
+<h2>Ads Summary</h2>
 
-<div id="decision-tab" class="tab-panel active">
+<div id="summary-cards"></div>
+
+<h3>Daily Spend vs Revenue</h3>
+
+<canvas id="summary-chart"></canvas>
+
+<h3>Daily Performance</h3>
+
+<div id="summary-table"></div>
+
+</div>
+
+<div id="decision-tab" class="tab-panel">
 
 <h2>Decision Center</h2>
 
