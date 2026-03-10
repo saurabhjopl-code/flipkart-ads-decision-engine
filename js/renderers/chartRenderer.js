@@ -1,3 +1,5 @@
+let summaryChart = null
+
 export function renderSummaryChart(data){
 
 const map = {}
@@ -25,24 +27,42 @@ const labels = Object.keys(map)
 const spend = labels.map(d => map[d].spend)
 const revenue = labels.map(d => map[d].revenue)
 
-const ctx = document
-.getElementById("summary-chart")
-.getContext("2d")
+const canvas = document.getElementById("summary-chart")
 
-new Chart(ctx,{
+if(!canvas) return
+
+const ctx = canvas.getContext("2d")
+
+/* destroy previous chart */
+
+if(summaryChart){
+summaryChart.destroy()
+}
+
+summaryChart = new Chart(ctx,{
 type:"line",
 data:{
 labels,
 datasets:[
 {
 label:"Ad Spend",
-data:spend
+data:spend,
+borderColor:"#2ed573",
+fill:false
 },
 {
 label:"Revenue",
-data:revenue
+data:revenue,
+borderColor:"#ff4757",
+fill:false
 }
 ]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{position:"top"}
+}
 }
 })
 
