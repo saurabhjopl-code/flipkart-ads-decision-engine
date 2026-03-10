@@ -28,12 +28,18 @@
 
 <div class="command-bar">
 
+<div class="command-input-wrapper">
+
 <input
 type="text"
 id="global-search"
-placeholder="Search campaign, keyword, product..."
+placeholder="Search..."
 onkeyup="runGlobalSearch()"
 />
+
+<span class="command-clear" onclick="clearGlobalSearch()">✕</span>
+
+</div>
 
 <div id="search-results"></div>
 
