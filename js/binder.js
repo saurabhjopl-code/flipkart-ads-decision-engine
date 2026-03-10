@@ -32,27 +32,31 @@ applyFilters()
 
 
 
-/* SAFE DATE PARSER */
+/* ------------------------------
+DATE PARSER (DD/MM/YYYY)
+------------------------------ */
 
 function parseDate(dateStr){
 
 if(!dateStr) return null
 
-const parts = dateStr.split("-")
+const parts = dateStr.split("/")
 
-if(parts.length !== 3) return new Date(dateStr)
+if(parts.length !== 3) return null
 
-const day = parts[0]
-const month = parts[1]
-const year = parts[2]
+const day = parseInt(parts[0])
+const month = parseInt(parts[1]) - 1
+const year = parseInt(parts[2])
 
-return new Date(`${year}-${month}-${day}`)
+return new Date(year, month, day)
 
 }
 
 
 
-/* RENDER */
+/* ------------------------------
+MAIN RENDER
+------------------------------ */
 
 function renderAll(){
 
@@ -78,28 +82,29 @@ renderDecisions(decisions)
 
 
 
-/* DEFAULT MONTH */
+/* ------------------------------
+DEFAULT MONTH
+------------------------------ */
 
 function setDefaultMonth(){
 
 const today = new Date()
 
-const month = today.getMonth()
-const year = today.getFullYear()
+const key = `${today.getMonth()}-${today.getFullYear()}`
 
 const select = document.getElementById("month-filter")
 
 if(select){
-
-select.value = `${month}-${year}`
-
+select.value = key
 }
 
 }
 
 
 
-/* FILTERS */
+/* ------------------------------
+FILTER ENGINE
+------------------------------ */
 
 window.applyFilters = function(){
 
@@ -112,6 +117,8 @@ const end = document.getElementById("end-date").value
 const search = document.getElementById("campaign-search").value.toLowerCase()
 
 
+
+/* ACC FILTER */
 
 if(acc){
 
@@ -131,6 +138,8 @@ data = data.filter(r => {
 
 const d = parseDate(r["Date"])
 
+if(!d) return false
+
 return d.getMonth() == m && d.getFullYear() == y
 
 })
@@ -139,13 +148,18 @@ return d.getMonth() == m && d.getFullYear() == y
 
 
 
-/* DATE RANGE */
+/* DATE RANGE FILTER */
 
 if(start){
 
 const s = new Date(start)
 
-data = data.filter(r => parseDate(r["Date"]) >= s)
+data = data.filter(r => {
+
+const d = parseDate(r["Date"])
+return d >= s
+
+})
 
 }
 
@@ -153,7 +167,12 @@ if(end){
 
 const e = new Date(end)
 
-data = data.filter(r => parseDate(r["Date"]) <= e)
+data = data.filter(r => {
+
+const d = parseDate(r["Date"])
+return d <= e
+
+})
 
 }
 
@@ -183,7 +202,9 @@ renderAll()
 
 
 
-/* SEARCH */
+/* ------------------------------
+SEARCH
+------------------------------ */
 
 window.searchCampaign = function(){
 
@@ -193,7 +214,9 @@ applyFilters()
 
 
 
-/* ACC DROPDOWN */
+/* ------------------------------
+ACC DROPDOWN
+------------------------------ */
 
 function populateACC(){
 
@@ -220,7 +243,9 @@ select.appendChild(option)
 
 
 
-/* MONTH DROPDOWN */
+/* ------------------------------
+MONTH DROPDOWN
+------------------------------ */
 
 function populateMonths(){
 
@@ -229,6 +254,8 @@ const set = new Set()
 dataStore.CDR.forEach(r=>{
 
 const d = parseDate(r["Date"])
+
+if(!d) return
 
 const key = `${d.getMonth()}-${d.getFullYear()}`
 
@@ -259,7 +286,9 @@ select.appendChild(option)
 
 
 
-/* MONTHLY TABLE */
+/* ------------------------------
+MONTHLY TABLE BUILD
+------------------------------ */
 
 function buildMonthlyTable(data){
 
@@ -271,10 +300,13 @@ const acc = r["ACC"]
 const campaign = r["Campaign Name"]
 
 const d = parseDate(r["Date"])
+
+if(!d) return
+
 const month = d.getMonth()
 const year = d.getFullYear()
 
-const key = acc+"-"+campaign+"-"+month+"-"+year
+const key = `${acc}-${campaign}-${month}-${year}`
 
 if(!map[key]){
 
@@ -282,7 +314,7 @@ map[key] = {
 
 ACC:acc,
 Campaign:campaign,
-Month:`${month+1}-${year}`,
+Month:`${month+1}/${year}`,
 
 "Ad Spend":0,
 Views:0,
@@ -308,7 +340,9 @@ return Object.values(map)
 
 
 
-/* LOADER */
+/* ------------------------------
+LOADER
+------------------------------ */
 
 function updateProgress(percent){
 
