@@ -7,6 +7,13 @@ import { renderDecisions } from "./renderers/decisionRenderer.js"
 import { runDecisionEngine } from "./engines/decisions/decisionEngine.js"
 import { filterData } from "./core/filterEngine.js"
 
+import { renderSummary } from "./renderers/summaryRenderer.js"
+import { renderSummaryChart } from "./renderers/chartRenderer.js"
+
+
+
+let filteredData = []
+
 
 
 async function startApp(){
@@ -18,28 +25,27 @@ hideLoader()
 populateACC()
 populateMonths()
 
-console.log("Data Loaded")
+filteredData = dataStore.CDR
 
-showData()
-
-runAssistant()
+renderAll()
 
 }
 
 
 
-function showData(){
+function renderAll(){
 
-renderTable("campaign-table", dataStore.CDR)
+renderSummary(filteredData)
+
+renderSummaryChart(filteredData)
+
+renderTable("campaign-table", filteredData)
+
+renderTable("summary-table", filteredData)
+
 renderTable("keyword-table", dataStore.CKR)
 renderTable("product-table", dataStore.CFR)
 renderTable("placement-table", dataStore.PPR)
-
-}
-
-
-
-function runAssistant(){
 
 const decisions = runDecisionEngine()
 
@@ -51,47 +57,65 @@ renderDecisions(decisions)
 
 
 
-/* ------------------------------
-PROGRESS BAR
---------------------------------*/
+/* -------------------
+FILTERS
+------------------- */
 
-function updateProgress(percent){
+window.applyFilters = function(){
 
-const fill = document.getElementById("progress-fill")
-const text = document.getElementById("progress-text")
+const acc = document.getElementById("acc-filter").value
+const month = document.getElementById("month-filter").value
+const start = document.getElementById("start-date").value
+const end = document.getElementById("end-date").value
 
-if(fill) fill.style.width = percent + "%"
+filteredData = filterData(dataStore.CDR,{
+acc,
+month,
+startDate:start,
+endDate:end
+})
 
-if(text) text.innerText = percent + "%"
-
-}
-
-
-
-function hideLoader(){
-
-const loader = document.getElementById("loader")
-
-if(loader){
-loader.style.display = "none"
-}
+renderAll()
 
 }
 
 
 
-/* ------------------------------
-ACC FILTER
---------------------------------*/
+/* -------------------
+SEARCH
+------------------- */
+
+window.searchCampaign = function(){
+
+const search = document
+.getElementById("campaign-search")
+.value
+.toLowerCase()
+
+filteredData = dataStore.CDR.filter(row =>
+
+row["Campaign Name"]
+.toLowerCase()
+.includes(search)
+
+)
+
+renderAll()
+
+}
+
+
+
+/* -------------------
+ACC DROPDOWN
+------------------- */
 
 function populateACC(){
 
 const accSet = new Set()
 
 dataStore.CDR.forEach(row=>{
-
-if(row["ACC"]) accSet.add(row["ACC"])
-
+accSet.add(row["ACC"])
 })
 
 const select = document.getElementById("acc-filter")
@@ -111,9 +135,9 @@ select.appendChild(option)
 
 
 
-/* ------------------------------
-MONTH FILTER
---------------------------------*/
+/* -------------------
+MONTH DROPDOWN
+------------------- */
 
 function populateMonths(){
 
@@ -146,48 +170,30 @@ select.appendChild(option)
 
 
 
-/* ------------------------------
-FILTER APPLY
---------------------------------*/
+/* -------------------
+PROGRESS
+------------------- */
 
-window.applyFilters = function(){
+function updateProgress(percent){
 
-const acc = document.getElementById("acc-filter").value
-const start = document.getElementById("start-date").value
-const end = document.getElementById("end-date").value
+const fill = document.getElementById("progress-fill")
+const text = document.getElementById("progress-text")
 
-const filtered = filterData(dataStore.CDR,{
-acc,
-startDate:start,
-endDate:end
-})
+if(fill) fill.style.width = percent + "%"
 
-renderTable("campaign-table", filtered)
+if(text) text.innerText = percent + "%"
 
 }
 
 
 
-/* ------------------------------
-SEARCH CAMPAIGN
---------------------------------*/
+function hideLoader(){
 
-window.searchCampaign = function(){
+const loader = document.getElementById("loader")
 
-const search = document
-.getElementById("campaign-search")
-.value
-.toLowerCase()
-
-const filtered = dataStore.CDR.filter(row =>
-
-row["Campaign Name"]
-.toLowerCase()
-.includes(search)
-
-)
-
-renderTable("campaign-table", filtered)
+if(loader){
+loader.style.display = "none"
+}
 
 }
 
