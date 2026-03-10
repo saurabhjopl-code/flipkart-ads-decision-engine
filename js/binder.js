@@ -47,3 +47,23 @@ renderDecisions(decisions)
 
 
 startApp()
+
+
+function updateProgress(percent){
+
+const bar = document.getElementById("progress-fill")
+const text = document.getElementById("progress-text")
+
+bar.style.width = percent + "%"
+
+text.innerText = percent + "%"
+
+}
+
+
+
+function hideLoader(){
+
+document.getElementById("loading-screen").style.display = "none"
+
+}
